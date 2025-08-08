@@ -122,7 +122,7 @@ flowchart LR
 ---
 
 ## 📂 Project Structure
-
+```bash
 embedded-ai-model-export/
 ├── day1_pytorch_to_onnx_quant.ipynb
 ├── day2_day3_tflite_conversion_and_inference.ipynb
@@ -132,7 +132,7 @@ embedded-ai-model-export/
 │   ├── mnist_model.tflite
 │   └── mnist_model_fp16.tflite
 ├── README.md
-
+```
 
 ---
 
