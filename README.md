@@ -14,24 +14,6 @@ This is a hands-on mini-project to demonstrate:
 - Running inference using ONNX Runtime
 - Benchmarking performance of original vs quantized models
 
----
-## 🧪 Reproduce locally (CPU)
-
-```bash
-# 1) Create a clean env (recommended)
-python -m venv .venv && source .venv/bin/activate    # Windows: .venv\Scripts\activate
-
-# 2) Install deps
-pip install -r requirements.txt
-
-# 3) Run Day 1 (PyTorch → ONNX → Quantization)
-# Open the notebook and run all cells:
-#   day1_pytorch_to_onnx_quant.ipynb
-
-# 4) Run Day 2/3 (TF → TFLite → Inference + Benchmark)
-# Open the notebook and run all cells:
-#   day2_day3_tflite_conversion_and_inference.ipynb
-
 ## 🧪 Results
 
 ### Prediction:
@@ -44,9 +26,10 @@ Expected inference for: (digit 4)
 output: ONNX Prediction: 4 | Actual Label: 4
 
 ### Model Size Comparison:
-
+```bash
 -rw-r--r-- 1 root root 87K Aug  8 12:52 mnist_model.onnx
 -rw-r--r-- 1 root root 28K Aug  8 13:06 mnist_model_quant.onnx
+```
 
 ### Execution time comparison:
 
@@ -73,11 +56,64 @@ output: ONNX Prediction: 4 | Actual Label: 4
 
 ---
 
+---
+## 🧪 Reproduce locally (CPU)
+
+```bash
+# 1) Create a clean env (recommended)
+python -m venv .venv && source .venv/bin/activate    # Windows: .venv\Scripts\activate
+
+# 2) Install deps
+pip install -r requirements.txt
+
+# 3) Run Day 1 (PyTorch → ONNX → Quantization)
+# Open the notebook and run all cells:
+#   day1_pytorch_to_onnx_quant.ipynb
+
+# 4) Run Day 2/3 (TF → TFLite → Inference + Benchmark)
+# Open the notebook and run all cells:
+#   day2_day3_tflite_conversion_and_inference.ipynb
+```
+## Why ONNX
+
+ONNX (Open Neural Network Exchange) is a common model format that lets you train in one framework (e.g., PyTorch) and run or optimize in many others — making it easy to deploy AI models across platforms and toolchains.
+
+## Why TFLite
+
+TensorFlow Lite is a lightweight, optimized runtime for running AI models on edge devices (phones, microcontrollers, NPUs), where size, speed, and low power consumption are critical.
+
+## Why Quantization
+
+Quantization reduces model size and speeds up inference by storing weights and activations in lower-precision formats (e.g., 8-bit integers instead of 32-bit floats) — often with minimal impact on accuracy, especially for well-trained models.
+
 ## ✅ What I Learned
 
 * [Day 1: PyTorch → ONNX → Quant](./day1_pytorch_to_onnx_quant.ipynb)
-* [Day 2/3: TF → TFLite + Benchmarks](./day2_day3_tflite_conversion_and_inference.ipynb)
+```mermaid
+flowchart LR
+  A["Train CNN in PyTorch"] --> B["Export to ONNX"]
+  B --> C["Dynamic Quantization (ONNX Runtime)"]
+  C --> D["Run Inference & Validate"]
+  style A fill:#f6d365,stroke:#333,stroke-width:1px
+  style B fill:#fda085,stroke:#333,stroke-width:1px
+  style C fill:#a1c4fd,stroke:#333,stroke-width:1px
+  style D fill:#c2e9fb,stroke:#333,stroke-width:1px
 
+```
+* [Day 2/3: TF → TFLite + Benchmarks](./day2_day3_tflite_conversion_and_inference.ipynb)
+```mermaid
+flowchart LR
+  A["ONNX Model or Trained TF Model"] --> B["Convert to TensorFlow SavedModel"]
+  B --> C["Convert to TFLite (Optimized float / FP16 / INT8)"]
+  C --> D["Run Inference with TFLite Interpreter"]
+  D --> E["Benchmark Size & Latency"]
+  style A fill:#f6d365,stroke:#333,stroke-width:1px
+  style B fill:#fda085,stroke:#333,stroke-width:1px
+  style C fill:#a1c4fd,stroke:#333,stroke-width:1px
+  style D fill:#c2e9fb,stroke:#333,stroke-width:1px
+  style E fill:#d4fc79,stroke:#333,stroke-width:1px
+
+```
 - How to convert a PyTorch model to ONNX
 - How to apply dynamic quantization with ONNX Runtime
 - How quantization affects model size and inference time
