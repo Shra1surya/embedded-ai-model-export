@@ -1,6 +1,10 @@
 # embedded-ai-model-export
 Hands-on project: PyTorch → ONNX → Quantization → Inference (MNIST example)
 
+[![Open In Colab - Day 1](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Shra1surya/embedded-ai-model-export/blob/main/day1_pytorch_to_onnx_quant.ipynb)
+[![Open In Colab - Day 2/3](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Shra1surya/embedded-ai-model-export/blob/main/day2_day3_tflite_conversion_and_inference.ipynb)
+
+
 # PyTorch → ONNX → Quantization Demo (MNIST)
 
 This is a hands-on mini-project to demonstrate:
@@ -11,6 +15,22 @@ This is a hands-on mini-project to demonstrate:
 - Benchmarking performance of original vs quantized models
 
 ---
+## 🧪 Reproduce locally (CPU)
+
+```bash
+# 1) Create a clean env (recommended)
+python -m venv .venv && source .venv/bin/activate    # Windows: .venv\Scripts\activate
+
+# 2) Install deps
+pip install -r requirements.txt
+
+# 3) Run Day 1 (PyTorch → ONNX → Quantization)
+# Open the notebook and run all cells:
+#   day1_pytorch_to_onnx_quant.ipynb
+
+# 4) Run Day 2/3 (TF → TFLite → Inference + Benchmark)
+# Open the notebook and run all cells:
+#   day2_day3_tflite_conversion_and_inference.ipynb
 
 ## 🧪 Results
 
@@ -87,6 +107,25 @@ embedded-ai-model-export/
 - Explore static quantization or QAT
 
 ---
+## 📄 Model Card (Mini)
+
+**Model**: Small CNN for MNIST digit classification (2 conv + 2 FC)  
+**Task**: Image classification (10 classes, 28×28 grayscale)  
+**Datasets**: MNIST (train/test splits from Keras & TorchVision)  
+**Training**: Adam, 1–2 epochs (demo scale), cross‑entropy loss  
+**Intended use**: Educational demo for embedded‑AI workflows (PyTorch → ONNX → TFLite), not for production  
+**Metrics (indicative)**: 97–99% test accuracy after 2 epochs (varies), TFLite latency ~0.025 ms (CPU sim)  
+**Artifacts**:
+- `models/mnist_model.onnx` (original ONNX)
+- `models/mnist_model_quant_uint8.onnx` (ONNX dynamic quantized)
+- `models/mnist_model.tflite` (optimized float)
+- `models/mnist_model_fp16.tflite` (FP16 weights)
+**Limitations**:
+- Trained briefly; not robust to domain shift or adversarial inputs
+- CPU benchmarks simulate embedded behavior; real devices may differ
+- ONNX Runtime CPU does not accelerate ConvInteger ops; quantized speedups are hardware‑dependent
+**License**: MIT (see LICENSE)
+
 
 ## 🧠 Author
 
