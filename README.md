@@ -46,16 +46,35 @@ output: ONNX Prediction: 4 | Actual Label: 4
 
 > ⚠️ ONNX Runtime on x86 doesn’t accelerate ConvInteger ops. Better gains expected on ARM/embedded targets.
 
+## 📦 TFLite Results (Trained TF → TFLite)
+
+- **TFLite (optimized float)**: `mnist_model.tflite` → **27.16 KB**
+- **TFLite FP16**: `mnist_model_fp16.tflite` → **46.78 KB**
+- **Accuracy checks**:
+  - Method A (Keras test sample): ✅ Pred **7**, Label **7**
+  - Method B (torchvision sample): ✅ Pred **7**, Label **7**
+- **Latency (CPU, 100 runs avg)**: **0.025 ms**
+
+> Notes:
+> - ONNX dynamic quantization reduced size on the ONNX path, but ONNX Runtime CPU didn’t accelerate ConvInteger ops.
+> - TFLite conversion succeeded; on this tiny network, the default optimized float model is smaller than FP16.
+> - Real embedded targets (ARM/NPUs/MCUs) typically show bigger benefits from INT8 quantization and accelerator kernels.
+
+
 ---
 
 ## 📂 Project Structure
 
 embedded-ai-model-export/
+├── day1_pytorch_to_onnx_quant.ipynb
+├── day2_day3_tflite_conversion_and_inference.ipynb
 ├── models/
-│ ├── mnist_model.onnx
-│ └── mnist_model_quant_uint8.onnx
-├── pytorch_onnx_quantization_demo.ipynb
+│   ├── mnist_model.onnx
+│   ├── mnist_model_quant_uint8.onnx
+│   ├── mnist_model.tflite
+│   └── mnist_model_fp16.tflite
 ├── README.md
+
 
 ---
 
