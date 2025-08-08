@@ -12,15 +12,6 @@ This is a hands-on mini-project to demonstrate:
 
 ---
 
-## ✅ What I Learned
-
-- How to convert a PyTorch model to ONNX
-- How to apply dynamic quantization with ONNX Runtime
-- How quantization affects model size and inference time
-- Practical insights into edge/embedded AI deployment pipelines
-
----
-
 ## 🧪 Results
 
 ### Prediction:
@@ -60,6 +51,17 @@ output: ONNX Prediction: 4 | Actual Label: 4
 > - TFLite conversion succeeded; on this tiny network, the default optimized float model is smaller than FP16.
 > - Real embedded targets (ARM/NPUs/MCUs) typically show bigger benefits from INT8 quantization and accelerator kernels.
 
+---
+
+## ✅ What I Learned
+
+* [Day 1: PyTorch → ONNX → Quant](./day1_pytorch_to_onnx_quant.ipynb)
+* [Day 2/3: TF → TFLite + Benchmarks](./day2_day3_tflite_conversion_and_inference.ipynb)
+
+- How to convert a PyTorch model to ONNX
+- How to apply dynamic quantization with ONNX Runtime
+- How quantization affects model size and inference time
+- Practical insights into edge/embedded AI deployment pipelines
 
 ---
 
