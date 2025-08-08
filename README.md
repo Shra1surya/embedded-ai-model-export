@@ -25,10 +25,17 @@ This is a hands-on mini-project to demonstrate:
 
 ### Prediction:
 Expected inference for: (digit 4)
+
 ![Digit Prediction](./real_digit.png)
 
-Outcome:
+
+**Outcome:**
 output: ONNX Prediction: 4 | Actual Label: 4
+
+### Model Size Comparison:
+
+-rw-r--r-- 1 root root 87K Aug  8 12:52 mnist_model.onnx
+-rw-r--r-- 1 root root 28K Aug  8 13:06 mnist_model_quant.onnx
 
 ### Execution time comparison:
 
