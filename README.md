@@ -25,7 +25,7 @@ This is a hands-on mini-project to demonstrate:
 
 ### Prediction:
 Expected inference for: (digit 4)
-![Digit Prediction](./digit_prediction_example.png)
+![Digit Prediction](./real_digit.png)
 
 Outcome:
 output: ONNX Prediction: 4 | Actual Label: 4
