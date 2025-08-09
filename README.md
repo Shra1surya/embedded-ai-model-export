@@ -114,10 +114,114 @@ flowchart LR
   style E fill:#d4fc79,stroke:#333,stroke-width:1px
 
 ```
+### Hardware Aware deployment map:
+```mermaid
+flowchart LR
+  subgraph Train
+    P["Train in PyTorch"]
+  end
+
+  P --> O["Export to ONNX"]
+
+  %% Generic CPU path
+  O --> ORT["ONNX Runtime (CPU)"]
+  ORT --> M1["Benchmark & Validate"]
+
+  %% Intel path
+  O --> OV["OpenVINO (Intel CPU/iGPU/VPU)"]
+  OV --> M2["Benchmark on Intel HW"]
+
+  %% ARM CPU path
+  O --> TF["Convert to TensorFlow SavedModel"]
+  TF --> TFL["Convert to TFLite"]
+  TFL --> ARMNN["ArmNN / TFLite on ARM"]
+  ARMNN --> M3["Benchmark on ARM SoC"]
+
+  %% NPU / Accelerator path
+  O --> V0["Vendor Compiler / SDK\n(Hailo, NPU, DSP, TPU)"]
+  V0 --> V1["Accelerator Runtime"]
+  V1 --> M4["Benchmark on Target NPU"]
+
+  classDef node fill:#cfe8ff,stroke:#333,stroke-width:1px;
+  classDef metric fill:#d4fc79,stroke:#333,stroke-width:1px;
+  class P,O,ORT,OV,TF,TFL,ARMNN,V0,V1 node;
+  class M1,M2,M3,M4 metric;
+```
+#### Where hardware fits:
+Start with an interchange format (ONNX), then choose the runtime/SDK that matches your target:
+
+    * Intel SoC: OpenVINO (CPU/iGPU/VPU)
+    * ARM SoC: ArmNN or TFLite (CPU, Ethos‑U microNPU)
+    * Dedicated NPU (e.g., Hailo): Use vendor compiler + runtime
+    You keep one source model and branch your deployment to the best backend for the device.
+
+#### Other topics covered
 - How to convert a PyTorch model to ONNX
 - How to apply dynamic quantization with ONNX Runtime
 - How quantization affects model size and inference time
 - Practical insights into edge/embedded AI deployment pipelines
+
+## What I Did & Why (in that order)
+
+### Step 1 – Train a Model in PyTorch
+
+    What: Built a small CNN to classify MNIST digits.
+
+    Why first: PyTorch is widely used for prototyping; training here gives us a working model with learned weights.
+
+    Why MNIST: Small, easy to train in seconds, yet allows us to demonstrate all conversion and optimization steps without large datasets or hardware.
+
+### Step 2 – Export to ONNX
+
+    What: Saved the PyTorch model in the ONNX (Open Neural Network Exchange) format.
+
+    Why next: ONNX is an interchange format that lets you move models between frameworks (PyTorch → TensorFlow, etc.) and leverage optimization/inference engines like ONNX Runtime without retraining.
+
+### Step 3 – Quantization (ONNX Runtime)
+
+    What: Applied dynamic quantization (weights stored as 8-bit integers instead of 32-bit floats).
+
+    Why: Reduces file size and can speed up inference — especially on CPUs/MCUs with good INT8 support — without needing retraining.
+
+    Why now: Doing it before moving to other runtimes lets us compare “full-precision” vs “quantized” versions at the ONNX stage.
+
+### Step 4 – ONNX Inference & Benchmark
+
+    What: Ran the original and quantized ONNX models using ONNX Runtime.
+
+    Why: Confirms the exported model still works and lets us measure latency/accuracy before converting to other formats.
+
+### Step 5 – ONNX → TensorFlow SavedModel
+
+    What: Converted the ONNX model to TensorFlow’s SavedModel format (or trained a TF model directly as a fallback).
+
+    Why: TensorFlow Lite (TFLite) conversion requires a TF model. This is the bridge between ONNX and TFLite.
+
+### Step 6 – TensorFlow → TFLite Conversion
+
+    What: Converted the SavedModel to .tflite format, applying optimization flags (default float, FP16, or INT8).
+
+    Why: TFLite is a lightweight runtime for mobile/embedded/edge devices — much smaller and faster than full TensorFlow.
+
+### Step 7 – TFLite Inference & Benchmark
+
+    What: Ran the .tflite models using the TFLite Interpreter in Python.
+
+    Why: Verifies functionality and measures inference latency, simulating what you’d see on an embedded device (though real devices may differ).
+
+### Step 8 – Compare Sizes, Latency, and Accuracy
+
+    What: Logged model sizes and average inference time for float vs quantized.
+
+    Why last: This is the payoff — you can show quantitative benefits of model optimizations for embedded use cases.
+
+### Why this order works:
+
+    Each step validates the model before adding more complexity.
+
+    We move from training → interchange format → optimization → deployment format — the same sequence used in real embedded AI workflows.
+
+    At each conversion, we can stop, debug, or measure without guessing where an issue came from.
 
 ---
 
